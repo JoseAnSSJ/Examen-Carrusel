@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,38 +42,34 @@ import com.example.carrucel.R
 import com.example.carrucel.domain.model.Movie
 import com.example.carrucel.utils.RatingBar
 import com.example.carrucel.utils.ResourceContent
+import com.example.carrucel.utils.VideoPlayer
 import com.example.carrucel.utils.toSpanishGenre
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
-    onBack: () -> Unit,
-    viewModel: DetailViewModel = hiltViewModel()
+    onBack: () -> Unit, viewModel: DetailViewModel = hiltViewModel()
 ) {
     val movie by viewModel.movie.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.title_detail),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(
-                                R.string.txt_return
-                            )
+            TopAppBar(title = {
+                Text(
+                    text = stringResource(R.string.title_detail),
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }, navigationIcon = {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(
+                            R.string.txt_return
                         )
-                    }
+                    )
                 }
-            )
-        }
-    ) { padding ->
+            })
+        }) { padding ->
         Box(
             Modifier
                 .padding(paddingValues = padding)
@@ -139,15 +137,22 @@ fun MovieDetailContent(movie: Movie) {
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     movie.genres.forEach { genre ->
-                        AssistChip(
-                            onClick = {},
-                            label = { Text(text = genre.toSpanishGenre()) }
-                        )
+                        AssistChip(onClick = {}, label = { Text(text = genre.toSpanishGenre()) })
                     }
                 }
             }
 
             Text(text = movie.description, style = MaterialTheme.typography.bodyLarge)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.trailer), style = MaterialTheme.typography.titleLarge
+            )
+            VideoPlayer(
+                url = "https://lorem.video/720p",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(16f / 9f)
+            )
         }
     }
 }
@@ -155,8 +160,7 @@ fun MovieDetailContent(movie: Movie) {
 @Composable
 fun Loading() {
     Box(
-        Modifier.fillMaxSize(),
-        Alignment.Center
+        Modifier.fillMaxSize(), Alignment.Center
     ) {
         CircularProgressIndicator(
             modifier = Modifier.size(80.dp)

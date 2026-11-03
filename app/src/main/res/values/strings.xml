@@ -8,4 +8,6 @@
     <string name="title_detail">Detalle</string>
     <string name="txt_return">Regresar</string>
     <string name="image_error">Imagen error</string>
+    <string name="error_play_video">No se pudo reproducir el video.</string>
+    <string name="trailer">Trailer</string>
 </resources>
