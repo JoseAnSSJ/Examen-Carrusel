@@ -48,6 +48,7 @@ import com.example.carrucel.core.Resource
 import com.example.carrucel.domain.model.Movie
 import com.example.carrucel.utils.GenreEnum
 import com.example.carrucel.utils.RatingBar
+import com.example.carrucel.utils.Pull2Refresh
 import com.example.carrucel.utils.ResourceContent
 
 @Composable
@@ -61,7 +62,6 @@ fun HomeScreen(
     val newItems by viewModel.newItems.collectAsStateWithLifecycle()
     val genreMovies by viewModel.genreMovies.collectAsStateWithLifecycle()
     val selectedGenre by viewModel.selectedGenre.collectAsStateWithLifecycle()
-
     val mainListState = rememberLazyListState()
 
     Column(
@@ -80,51 +80,55 @@ fun HomeScreen(
             style = MaterialTheme.typography.titleLarge
         )
 
-        LazyColumn(
-            state = mainListState,
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-            contentPadding = PaddingValues(vertical = 16.dp)
+        Pull2Refresh(
+            viewModel = viewModel
         ) {
-            item {
-                ResourceContent(
-                    resource = featured,
-                    onRetry = viewModel::loadFeatured,
-                ) { movies ->
-                    MainCarousel(
-                        movies = movies.take(5), onMovieClick = onMovieClick
+            LazyColumn(
+                state = mainListState,
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                contentPadding = PaddingValues(vertical = 16.dp)
+            ) {
+                item {
+                    ResourceContent(
+                        resource = featured,
+                        onRetry = viewModel::loadFeatured,
+                    ) { movies ->
+                        MainCarousel(
+                            movies = movies.take(5), onMovieClick = onMovieClick
+                        )
+                    }
+                }
+
+                item {
+                    MovieSection(
+                        title = stringResource(R.string.subtitle_new),
+                        resource = newItems,
+                        onRetry = viewModel::loadNew,
+                        onMovieClick = onMovieClick
+                    )
+                }
+
+                item {
+                    MovieSection(
+                        title = stringResource(R.string.subtitle_popular),
+                        resource = topRated,
+                        onRetry = viewModel::loadTopRated,
+                        onMovieClick = onMovieClick
+                    )
+                }
+
+                item {
+                    GenreSection(
+                        selectedGenre = selectedGenre,
+                        movies = genreMovies,
+                        onGenreClick = viewModel::loadGenre,
+                        onRetry = { viewModel.loadGenre(selectedGenre) },
+                        onMovieClick = onMovieClick
                     )
                 }
             }
-
-            item {
-                MovieSection(
-                    title = stringResource(R.string.subtitle_new),
-                    resource = newItems,
-                    onRetry = viewModel::loadNew,
-                    onMovieClick = onMovieClick
-                )
-            }
-
-            item {
-                MovieSection(
-                    title = stringResource(R.string.subtitle_popular),
-                    resource = topRated,
-                    onRetry = viewModel::loadTopRated,
-                    onMovieClick = onMovieClick
-                )
-            }
-
-            item {
-                GenreSection(
-                    selectedGenre = selectedGenre,
-                    movies = genreMovies,
-                    onGenreClick = viewModel::loadGenre,
-                    onRetry = { viewModel.loadGenre(selectedGenre) },
-                    onMovieClick = onMovieClick
-                )
-            }
         }
-    }
+        }
 
 
 }

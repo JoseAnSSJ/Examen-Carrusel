@@ -3,6 +3,7 @@ package com.example.carrucel.utils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -37,6 +39,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -44,6 +47,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.example.carrucel.R
 import com.example.carrucel.core.Resource
+import com.example.carrucel.presentation.BaseViewModel
 
 @Composable
 fun RatingBar(
@@ -171,4 +175,18 @@ fun VideoPlayer(
             )
         }
     }
+}
+@Composable
+fun Pull2Refresh(
+    viewModel: BaseViewModel,
+    content: @Composable BoxScope.() -> Unit
+) {
+    val isRefresh by viewModel.isRefresh.collectAsStateWithLifecycle()
+
+    PullToRefreshBox(
+        isRefreshing = isRefresh,
+        onRefresh = viewModel::refresh,
+        modifier = Modifier.fillMaxSize(),
+        content = content
+    )
 }

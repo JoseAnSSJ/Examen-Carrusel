@@ -41,6 +41,7 @@ import coil3.compose.SubcomposeAsyncImage
 import com.example.carrucel.R
 import com.example.carrucel.domain.model.Movie
 import com.example.carrucel.utils.RatingBar
+import com.example.carrucel.utils.Pull2Refresh
 import com.example.carrucel.utils.ResourceContent
 import com.example.carrucel.utils.VideoPlayer
 import com.example.carrucel.utils.toSpanishGenre
@@ -70,18 +71,22 @@ fun DetailScreen(
                 }
             })
         }) { padding ->
-        Box(
-            Modifier
-                .padding(paddingValues = padding)
-                .fillMaxSize()
+        Pull2Refresh(
+            viewModel = viewModel
         ) {
-            ResourceContent(
-                resource = movie,
-                onRetry = viewModel::load,
-                loading = {
-                    Loading()
-                },
-            ) { m -> MovieDetailContent(m) }
+            Box(
+                Modifier
+                    .padding(paddingValues = padding)
+                    .fillMaxSize()
+            ) {
+                ResourceContent(
+                    resource = movie,
+                    onRetry = viewModel::load,
+                    loading = {
+                        Loading()
+                    },
+                ) { m -> MovieDetailContent(m) }
+            }
         }
     }
 }

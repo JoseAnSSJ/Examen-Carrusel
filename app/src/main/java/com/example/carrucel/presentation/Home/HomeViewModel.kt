@@ -1,6 +1,5 @@
 package com.example.carrucel.presentation.Home
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.carrucel.core.Resource
 import com.example.carrucel.domain.model.Movie
@@ -8,6 +7,7 @@ import com.example.carrucel.domain.usercase.GetMoviesByGenreUseCase
 import com.example.carrucel.domain.usercase.GetMoviesByStarsUseCase
 import com.example.carrucel.domain.usercase.GetMoviesByYearUseCase
 import com.example.carrucel.domain.usercase.GetMoviesUseCase
+import com.example.carrucel.presentation.BaseViewModel
 import com.example.carrucel.utils.GenreEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
     private val getByStars: GetMoviesByStarsUseCase,
     private val getByYear: GetMoviesByYearUseCase,
     private val getByGenre: GetMoviesByGenreUseCase
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _featured = MutableStateFlow<Resource<List<Movie>>>(Resource.Loading)
     val featured = _featured.asStateFlow()
@@ -79,6 +79,16 @@ class HomeViewModel @Inject constructor(
             getByGenre(genre = genreEnum.name).collect { result ->
                 _genreMovies.value = result
             }
+        }
+    }
+
+
+    override fun refresh() {
+        loadingRefresh {
+            loadFeatured()
+            loadTopRated()
+            loadNew()
+            loadGenre(genreEnum = GenreEnum.DRAMA)
         }
     }
 }
