@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Carrucel</string>
+    <string name="title_movies">Peliculas</string>
+    <string name="subtitle_genre">Géneros</string>
+    <string name="retry">Reintentar</string>
+    <string name="subtitle_new">Nuevos</string>
+    <string name="subtitle_popular">Populares</string>
+    <string name="title_detail">Detalle</string>
+    <string name="txt_return">Regresar</string>
+    <string name="image_error">Imagen error</string>
 </resources>

@@ -8,6 +8,7 @@ import com.example.carrucel.domain.usercase.GetMoviesByGenreUseCase
 import com.example.carrucel.domain.usercase.GetMoviesByStarsUseCase
 import com.example.carrucel.domain.usercase.GetMoviesByYearUseCase
 import com.example.carrucel.domain.usercase.GetMoviesUseCase
+import com.example.carrucel.utils.GenreEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +36,7 @@ class HomeViewModel @Inject constructor(
     private val _genreMovies = MutableStateFlow<Resource<List<Movie>>>(Resource.Loading)
     val genreMovies = _genreMovies.asStateFlow()
 
-    private val _selectedGenre = MutableStateFlow("Drama")
+    private val _selectedGenre = MutableStateFlow(GenreEnum.DRAMA)
     val selectedGenre = _selectedGenre.asStateFlow()
 
     private var genreJob: Job? = null
@@ -44,7 +45,7 @@ class HomeViewModel @Inject constructor(
         loadFeatured()
         loadTopRated()
         loadNew()
-        loadGenre(genre = "Drama")
+        loadGenre(genreEnum = GenreEnum.DRAMA)
     }
 
     fun loadFeatured() {
@@ -65,17 +66,17 @@ class HomeViewModel @Inject constructor(
 
     fun loadNew() {
         viewModelScope.launch {
-            getByYear(year = 2024).collect { result ->
+            getByYear(year = 2026).collect { result ->
                 _newItems.value = result
             }
         }
     }
 
-    fun loadGenre(genre: String) {
-        _selectedGenre.value = genre
+    fun loadGenre(genreEnum: GenreEnum) {
+        _selectedGenre.value = genreEnum
         genreJob?.cancel()
         genreJob = viewModelScope.launch {
-            getByGenre(genre = genre).collect { result ->
+            getByGenre(genre = genreEnum.name).collect { result ->
                 _genreMovies.value = result
             }
         }

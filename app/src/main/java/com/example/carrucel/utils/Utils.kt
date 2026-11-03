@@ -21,3 +21,5 @@ fun <T> safeApiFlow(call: suspend () -> T): Flow<Resource<T>> = flow {
         emit(Resource.Error("Ocurrió un error inesperado."))
     }
 }
+
+fun String.toSpanishGenre(): String = GenreEnum.fromEnglish(this)?.spanish ?: this
